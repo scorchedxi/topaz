@@ -127,7 +127,7 @@ function onEventUpdate(player, csid, option)
                 -- https://www.bg-wiki.com/bg/Introduction_to_Teamwork
                 if (partySameNationCount == partySizeRequirement) then
                     -- nation requirements met
-                    player:setCharVar("introToTmwrk_pass", 1)
+                    player:setLocalVar("introToTmwrk_pass", 1)
                     player:updateEvent(15, 1)
                 else
                     -- not the same nation
@@ -137,7 +137,7 @@ function onEventUpdate(player, csid, option)
                 -- https://www.bg-wiki.com/bg/Intermediate_Teamwork
                 if (partySameRaceCount == partySizeRequirement) then
                     -- race requirements met
-                    player:setCharVar("intermedTmwrk_pass", 1)
+                    player:setLocalVar("intermedTmwrk_pass", 1)
                     player:updateEvent(15, 2)
                 else
                     -- not the same race
@@ -147,7 +147,7 @@ function onEventUpdate(player, csid, option)
                 -- https://www.bg-wiki.com/bg/Advanced_Teamwork
                 if partySameJobCount == partySameJobCount then
                     -- race requirements met
-                    player:setCharVar("advTmwrk_pass", 1)
+                    player:setLocalVar("advTmwrk_pass", 1)
                     player:updateEvent(15, 3)
                 else
                     -- not the same job
