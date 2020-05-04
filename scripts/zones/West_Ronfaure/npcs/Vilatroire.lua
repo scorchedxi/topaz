@@ -78,7 +78,7 @@ function onEventUpdate(player, csid, option)
 
         -- newer versions of these quests only require a party of 2. 
         -- older versions require all 6
-        local partySizeRequirement = 1
+        local partySizeRequirement = 2
 
         -- get party
         local party = player:getParty()
