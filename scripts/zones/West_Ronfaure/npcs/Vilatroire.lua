@@ -169,7 +169,7 @@ function onEventFinish(player, csid, option)
         local questIntermediateTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK);
         local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK);
 
-            if questIntroToTeamwork == QUEST_ACCEPTED and player:getCharVar("introToTmwrk_pass") == 1 then
+            if questIntroToTeamwork == QUEST_ACCEPTED and player:getLocalVar("introToTmwrk_pass") == 1 then
                 -- check their inventory
                 npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK, {
                     item = 13442,
@@ -177,7 +177,7 @@ function onEventFinish(player, csid, option)
                     title = tpz.title.THIRDRATE_ORGANIZER,
                     var = "introToTmwrk_pass"
                 })
-            elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getCharVar("intermedTmwrk_pass") == 1 then
+            elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getLocalVar("intermedTmwrk_pass") == 1 then
                  -- check their inventory
                 npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK, {
                     item = 4994,
@@ -185,7 +185,7 @@ function onEventFinish(player, csid, option)
                     title = tpz.title.SECONDRATE_ORGANIZER,
                     var = "intermedTmwrk_pass"
                 })
-            elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getCharVar("advTmwrk_pass") == 1 then
+            elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getLocalVar("advTmwrk_pass") == 1 then
                  -- check their inventory
                 npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK, {
                     item = 13459,
