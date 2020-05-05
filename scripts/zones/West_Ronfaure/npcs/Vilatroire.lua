@@ -78,7 +78,7 @@ function onEventUpdate(player, csid, option)
 
         -- newer versions of these quests only require a party of 2. 
         -- older versions require all 6
-        local partySizeRequirement = 1
+        local partySizeRequirement = 2
 
         -- get party
         local party = player:getParty()
@@ -125,7 +125,7 @@ function onEventUpdate(player, csid, option)
 
             if questIntroToTeamwork == QUEST_ACCEPTED then
                 -- https://www.bg-wiki.com/bg/Introduction_to_Teamwork
-                if (partySameNationCount == partySizeRequirement) then
+                if partySameNationCount == partySizeRequirement then
                     -- nation requirements met
                     player:setLocalVar("introToTmwrk_pass", 1)
                     player:updateEvent(15, 1)
@@ -135,7 +135,7 @@ function onEventUpdate(player, csid, option)
                 end
             elseif questIntermediateTeamwork == QUEST_ACCEPTED then
                 -- https://www.bg-wiki.com/bg/Intermediate_Teamwork
-                if (partySameRaceCount == partySizeRequirement) then
+                if partySameRaceCount == partySizeRequirement then
                     -- race requirements met
                     player:setLocalVar("intermedTmwrk_pass", 1)
                     player:updateEvent(15, 2)
@@ -169,30 +169,27 @@ function onEventFinish(player, csid, option)
         local questIntermediateTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK);
         local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK);
 
-            if questIntroToTeamwork == QUEST_ACCEPTED and player:getLocalVar("introToTmwrk_pass") == 1 then
-                -- check their inventory
-                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK, {
-                    item = 13442,
-                    fame = 80, -- fame defaults to 30 if not set
-                    title = tpz.title.THIRDRATE_ORGANIZER,
-                    var = "introToTmwrk_pass"
-                })
-            elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getLocalVar("intermedTmwrk_pass") == 1 then
-                 -- check their inventory
-                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK, {
-                    item = 4994,
-                    fame = 80, -- fame defaults to 30 if not set
-                    title = tpz.title.SECONDRATE_ORGANIZER,
-                    var = "intermedTmwrk_pass"
-                })
-            elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getLocalVar("advTmwrk_pass") == 1 then
-                 -- check their inventory
-                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK, {
-                    item = 13459,
-                    fame = 80, -- fame defaults to 30 if not set
-                    title = tpz.title.FIRSTRATE_ORGANIZER,
-                    var = "advTmwrk_pass"
-                })
+        if questIntroToTeamwork == QUEST_ACCEPTED and player:getLocalVar("introToTmwrk_pass") == 1 then
+            -- check their inventory
+            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK, {
+                item = 13442,
+                fame = 80, -- fame defaults to 30 if not set
+                title = tpz.title.THIRDRATE_ORGANIZER,
+            })
+        elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getLocalVar("intermedTmwrk_pass") == 1 then
+             -- check their inventory
+            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK, {
+                item = 4994,
+                fame = 80, -- fame defaults to 30 if not set
+                title = tpz.title.SECONDRATE_ORGANIZER,
+            })
+        elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getLocalVar("advTmwrk_pass") == 1 then
+             -- check their inventory
+            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK, {
+                item = 13459,
+                fame = 80, -- fame defaults to 30 if not set
+                title = tpz.title.FIRSTRATE_ORGANIZER,
+            })
     end 
     elseif csid == 131 and option == 1 then
         -- 131 is the third and last quest
