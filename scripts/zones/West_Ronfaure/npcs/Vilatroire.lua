@@ -1,6 +1,6 @@
 -----------------------------------
 -- Area: West Ronfaure
---  NPC: Vilatroire
+-- NPC: Vilatroire
 -- Involved in Quests: "Introduction To Teamwork", "Intermediate Teamwork",
 -- "Advanced Teamwork"
 -- !pos -260.361 -70.999 423.420 100
@@ -16,56 +16,34 @@ function onTrade(player, npc, trade)
 end
 
 function onTrigger(player, npc)
-    --player:startEvent(129) -- starts the ready check for all three quests
-    --player:startEvent(130) -- post third quest dialog
-    --player:startEvent(131) -- Same job
-    --player:startEvent(132) -- You don't have the requirements to start the second quest
-    --player:startEvent(133) -- Same race
-    --player:startEvent(134) -- You don't have the requirements to start the first quest
-    --player:startEvent(135) -- Starts first quest - 6 members same alliance
-    --player:startEvent(136) -- Default - before quests
-
-    -- get players fame for this quest region
     local sandyFame = player:getFameLevel(SANDORIA)
 
-    -- get quest statuses
     local questIntroToTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK)
     local questIntermediateTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK)
     local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
 
     if questIntroToTeamwork == QUEST_AVAILABLE and sandyFame >= 2 then
-        -- start the event that starts the quest
-         player:startEvent(135)
+         player:startEvent(135) -- Starts first quest - 6 members same alliance
     elseif questIntroToTeamwork == QUEST_AVAILABLE and sandyFame < 2 then
-        -- don't meet fame requirements
-        player:startEvent(134)
+        player:startEvent(134) -- You don't have the requirements to start the first quest
     elseif questIntroToTeamwork == QUEST_ACCEPTED then
-        -- start the event that asks them if they are ready to check
-        player:startEvent(129, 0, 1)
+        player:startEvent(129, 0, 1) -- starts the ready check for all three quests
     elseif questIntroToTeamwork == QUEST_COMPLETED and questIntermediateTeamwork == QUEST_AVAILABLE and sandyFame >= 3 and player:getMainLvl() >= 10 then
-        -- they've completed the first quest, the second quest is available, and they have thee required fame,
-        -- start event that starts the next quest
-        player:startEvent(133)
+        player:startEvent(133) -- Same race
     elseif questIntroToTeamwork == QUEST_COMPLETED and questIntermediateTeamwork == QUEST_AVAILABLE and sandyFame < 3 and player:getMainLvl() < 10 then
-        -- don't meet fame requirements
-        player:startEvent(132)
+        player:startEvent(132) -- You don't have the requirements to start the second quest
     elseif questIntermediateTeamwork == QUEST_ACCEPTED then
-         -- start the event that asks them if they are ready to check
-        player:startEvent(129, 0, 2)
+        player:startEvent(129, 0, 2) -- starts the ready check for all three quests
     elseif questIntermediateTeamwork == QUEST_COMPLETED and questAdvancedTeamwork == QUEST_AVAILABLE and sandyFame >= 4 and player:getMainLvl() >= 10 then
-        -- they've completed the second quest, the third quest is available, and they have thee required fame,
-        -- start event that starts the next quest
-        player:startEvent(131)
+        player:startEvent(131) -- Same job
     elseif questIntermediateTeamwork == QUEST_COMPLETED and questAdvancedTeamwork == QUEST_AVAILABLE and sandyFame < 4 and player:getMainLvl() < 10 then
-        -- don't meet fame requirements
-        player:startEvent(130)
+        player:startEvent(130) -- post second and third quest dialog
     elseif questAdvancedTeamwork == QUEST_ACCEPTED then
-         -- start the event that asks them if they are ready to check
-        player:startEvent(129, 0, 3)
+        player:startEvent(129, 0, 3) -- starts the ready check for all three quests
     elseif questAdvancedTeamwork == QUEST_COMPLETED then
-        player:startEvent(130)
+        player:startEvent(130) -- post second and third quest dialog
     else
-        player:startEvent(136)
+        player:startEvent(136) --player:startEvent(136) -- Default - before quests
     end
 end
 
@@ -80,43 +58,38 @@ function onEventUpdate(player, csid, option)
         -- older versions require all 6
         local partySizeRequirement = 2
 
-        -- get party
         local party = player:getParty()
+        local pRace = player:getRace()
 
-        -- since we loop through the party to check zone and distance, may as well check these in the same loop
         local partySameNationCount = 0
         local partySameRaceCount = 0
         local partySameJobCount = 0
 
-        -- make sure the party is at least the right partySizeRequirement
         if #party >= partySizeRequirement then
 
-            -- make sure everyone in the party is in the same zone and nearby
             for key, member in pairs(party) do
+            	local mRace = member:getRace()
+
                 if member:getZoneID() ~= player:getZoneID() or member:checkDistance(player) > 15 then
-                    -- member not in zone or range
-                    player:updateEvent(1)
+                    player:updateEvent(1) -- member not in zone or range
                     return
                 else
-                    -- check nation for first quest
                     if member:getNation() == player:getNation() then
                         partySameNationCount = partySameNationCount + 1
                     end
 
-                    -- check race for second
-                    if     (player:getRace() == tpz.race.HUME_M or player:getRace() == tpz.race.HUME_F) and (member:getRace() == tpz.race.HUME_M or member:getRace() == tpz.race.HUME_F) then
+                    if     (pRace == tpz.race.HUME_M or pRace == tpz.race.HUME_F) and (mRace == tpz.race.HUME_M or mRace == tpz.race.HUME_F) then
                               partySameRaceCount = partySameRaceCount + 1
-                    elseif (player:getRace() == tpz.race.ELVAAN_M or player:getRace() == tpz.race.ELVAAN_F) and (member:getRace() == tpz.race.ELVAAN_M or member:getRace() == tpz.race.ELVAAN_F) then
+                    elseif (pRace == tpz.race.ELVAAN_M or pRace == tpz.race.ELVAAN_F) and (mRace == tpz.race.ELVAAN_M or mRace == tpz.race.ELVAAN_F) then
                               partySameRaceCount = partySameRaceCount + 1
-                    elseif (player:getRace() == tpz.race.TARU_M or player:getRace() == tpz.race.TARU_F) and (member:getRace() == tpz.race.TARU_M or member:getRace() == tpz.race.TARU_F) then
+                    elseif (pRace == tpz.race.TARU_M or pRace == tpz.race.TARU_F) and (mRace == tpz.race.TARU_M or mRace == tpz.race.TARU_F) then
                               partySameRaceCount = partySameRaceCount + 1
-                    elseif player:getRace() == tpz.race.GALKA and member:getRace() == tpz.race.GALKA then 
+                    elseif pRace == tpz.race.GALKA and mRace == tpz.race.GALKA then 
                               partySameRaceCount = partySameRaceCount + 1
-                    elseif player:getRace() == tpz.race.MITHRA and member:getRace() == tpz.race.MITHRA then
+                    elseif pRace == tpz.race.MITHRA and mRace == tpz.race.MITHRA then
                               partySameRaceCount = partySameRaceCount + 1
                     end
 
-                    -- job for third
                     if member:getMainJob() == player:getMainJob() then
                         partySameJobCount = partySameJobCount + 1
                     end
@@ -124,73 +97,60 @@ function onEventUpdate(player, csid, option)
             end
 
             if questIntroToTeamwork == QUEST_ACCEPTED then
-                -- https://www.bg-wiki.com/bg/Introduction_to_Teamwork
-                if partySameNationCount == partySizeRequirement then
-                    -- nation requirements met
-                    player:setLocalVar("introToTmwrk_pass", 1)
+                if (partySameNationCount == partySizeRequirement) then
+                    player:setLocalVar("introToTmwrk_pass", 1) -- nation requirements met
                     player:updateEvent(15, 1)
                 else
-                    -- not the same nation
-                    player:updateEvent(3)
+                    player:updateEvent(3) -- not the same nation
                 end
             elseif questIntermediateTeamwork == QUEST_ACCEPTED then
-                -- https://www.bg-wiki.com/bg/Intermediate_Teamwork
-                if partySameRaceCount == partySizeRequirement then
-                    -- race requirements met
+                if (partySameRaceCount == partySizeRequirement) then
                     player:setLocalVar("intermedTmwrk_pass", 1)
-                    player:updateEvent(15, 2)
+                    player:updateEvent(15, 2) -- race requirements met
                 else
-                    -- not the same race
-                    player:updateEvent(4)
+                    
+                    player:updateEvent(4) -- not the same race
                 end
             elseif questAdvancedTeamwork == QUEST_ACCEPTED then
-                -- https://www.bg-wiki.com/bg/Advanced_Teamwork
                 if partySameJobCount == partySameJobCount then
-                    -- race requirements met
                     player:setLocalVar("advTmwrk_pass", 1)
-                    player:updateEvent(15, 3)
+                    player:updateEvent(15, 3) -- race requirements met
                 else
-                    -- not the same job
-                    player:updateEvent(5)
+                    player:updateEvent(5) -- not the same job
                 end
             end
         else
-            -- need more party members
-            player:updateEvent(1)
+            player:updateEvent(1) -- need more party members
         end
     end
 end
 
 function onEventFinish(player, csid, option)
-    -- csid 129 is the event for when they have selected ready/not ready
-    
+    -- csid 129 is the event for when they have selected ready/not ready option is always 0
     if csid == 129 and option == 0 then
         local questIntroToTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK);
         local questIntermediateTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK);
         local questAdvancedTeamwork = player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK);
 
-        if questIntroToTeamwork == QUEST_ACCEPTED and player:getLocalVar("introToTmwrk_pass") == 1 then
-            -- check their inventory
-            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK, {
-                item = 13442,
-                fame = 80, -- fame defaults to 30 if not set
-                title = tpz.title.THIRDRATE_ORGANIZER,
-            })
-        elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getLocalVar("intermedTmwrk_pass") == 1 then
-             -- check their inventory
-            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK, {
-                item = 4994,
-                fame = 80, -- fame defaults to 30 if not set
-                title = tpz.title.SECONDRATE_ORGANIZER,
-            })
-        elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getLocalVar("advTmwrk_pass") == 1 then
-             -- check their inventory
-            npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK, {
-                item = 13459,
-                fame = 80, -- fame defaults to 30 if not set
-                title = tpz.title.FIRSTRATE_ORGANIZER,
-            })
-    end 
+            if questIntroToTeamwork == QUEST_ACCEPTED and player:getLocalVar("introToTmwrk_pass") == 1 then
+                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTRODUCTION_TO_TEAMWORK, {
+                    item = 13442,
+                    fame = 80, -- fame defaults to 30 if not set
+                    title = tpz.title.THIRDRATE_ORGANIZER,
+                })
+            elseif questIntermediateTeamwork == QUEST_ACCEPTED and player:getLocalVar("intermedTmwrk_pass") == 1 then
+                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.INTERMEDIATE_TEAMWORK, {
+                    item = 4994,
+                    fame = 80, -- fame defaults to 30 if not set
+                    title = tpz.title.SECONDRATE_ORGANIZER,
+                })
+            elseif questAdvancedTeamwork == QUEST_ACCEPTED and player:getLocalVar("advTmwrk_pass") == 1 then
+                npcUtil.completeQuest(player, SANDORIA, tpz.quest.id.sandoria.ADVANCED_TEAMWORK, {
+                    item = 13459,
+                    fame = 80, -- fame defaults to 30 if not set
+                    title = tpz.title.FIRSTRATE_ORGANIZER,
+                })
+    		end
     elseif csid == 131 and option == 1 then
         -- 131 is the third and last quest
         player:addQuest(SANDORIA,tpz.quest.id.sandoria.ADVANCED_TEAMWORK)
